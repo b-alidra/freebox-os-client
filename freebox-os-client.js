@@ -6,7 +6,8 @@
 var endpoints = [].concat(
     require('./endpoints/authentication'),
     require('./endpoints/config'),
-    require('./endpoints/download')
+    require('./endpoints/download'),
+    require('./endpoints/connection')
 );
 
 /**
