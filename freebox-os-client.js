@@ -78,10 +78,10 @@ function createCallback(next) {
  * Make an HTTP request
  *
  *
- * @param {Object}		options     The request options
- * @param {Function}   	next	   	The callback function
+ * @param {Object}		options		The request options
+ * @param {Function}	next		The callback function
  *
- * @return {Boolean}      			True on success, false otherwise
+ * @return {Boolean}				True on success, false otherwise
  */
 function request(options, next) {
 
@@ -90,9 +90,6 @@ function request(options, next) {
 		return false;
 	}
 	
-	var args	= options.args || {};
-	var headers	= options.headers || {};
-	 
 	var xhr = Titanium.Network.createHTTPClient({
 		onload: function() {
 			next && next(null, this, this.responseText);
