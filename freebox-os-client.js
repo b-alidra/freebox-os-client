@@ -1,11 +1,6 @@
 'use strict';
 
 /**
- * Define modules
- */
-var request = require('request');
-
-/**
  * Load the endpoint declarations
  */
 var endpoints = [].concat(
@@ -65,19 +60,69 @@ function createCallback(next) {
             };
             error = 'Freebox unreachable';
         }
-        if (!error && response.statusCode === 200) {
+        if (!error && response.status === 200) {
             body = parse(body);
             next(body);
         } else {
             next({
                 success: false,
-                msg: error || response.request.httpModule.STATUS_CODES[response.statusCode],
-                error_code: response.statusCode
+                msg: error || response.statusText,
+                error_code: response.status
             });
         }
     };
 }
 
+/**
+ * Make an HTTP request
+ *
+ *
+ * @param {Object}		options     The request options
+ * @param {Function}   	next	   	The callback function
+ *
+ * @return {Boolean}      			True on success, false otherwise
+ */
+function request(options, next) {
+
+	if (!Ti.Network.online) {
+		next && (next("No connection"));
+		return false;
+	}
+	
+	var args	= options.args || {};
+	var headers	= options.headers || {};
+	 
+	var xhr = Titanium.Network.createHTTPClient({
+		onload: function() {
+			next && next(null, this, this.responseText);
+		},
+		onerror: function(e) {
+			next && (next(this.statusText));
+		},
+		timeout: options.timeout || 5000
+	});
+	
+	if (OS_IOS)
+		xhr.open(options.method, options.url);
+		
+	if (!_.isEmpty(options.headers)) {
+		for (var i in options.headers) {
+			xhr.setRequestHeader(i, headers[i]);
+		}
+	}
+	
+	if (!OS_IOS)
+		xhr.open(options.method, options.url);
+		
+	if (options.method == 'POST') {
+		var data = options.json || options.formData || {};
+		xhr.send(JSON.stringify(data));
+	}
+	else
+		xhr.send();
+	
+	return true;
+};
 
 /**
  *  Create a function for the endpoint parameter
@@ -97,7 +142,7 @@ function createEndPoint(endpoint) {
           url: client.baseUrl + endpoint.options.url,
           encode: 'utf-8',
           method: endpoint.options.method
-        }
+        };
 
         if(bodyParam && bodyParam.form){
             options.formData = bodyParam.formData;
