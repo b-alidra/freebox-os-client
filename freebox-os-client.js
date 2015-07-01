@@ -105,7 +105,7 @@ function request(options, next) {
 		
 	if (!_.isEmpty(options.headers)) {
 		for (var i in options.headers) {
-			xhr.setRequestHeader(i, headers[i]);
+			xhr.setRequestHeader(i, options.headers[i]);
 		}
 	}
 	
