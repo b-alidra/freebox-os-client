@@ -112,7 +112,7 @@ function request(options, next) {
 	if (!OS_IOS)
 		xhr.open(options.method, options.url);
 		
-	if (options.method == 'POST') {
+	if (options.method == 'POST' || options.method == 'PUT') {
 		var data = options.json || options.formData || {};
 		xhr.send(JSON.stringify(data));
 	}
