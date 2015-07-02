@@ -95,14 +95,14 @@ function request(options, next) {
 			next && next(null, this, this.responseText);
 		},
 		onerror: function(e) {
-			next && (next(this.statusText));
+			next && (next(this.statusText, this, this.responseText));
 		},
 		timeout: options.timeout || 5000
 	});
 	
 	if (OS_IOS)
 		xhr.open(options.method, options.url);
-		
+
 	if (!_.isEmpty(options.headers)) {
 		for (var i in options.headers) {
 			xhr.setRequestHeader(i, options.headers[i]);
