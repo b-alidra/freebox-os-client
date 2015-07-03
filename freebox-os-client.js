@@ -114,7 +114,7 @@ function request(options, next) {
 		
 	if (options.method == 'POST' || options.method == 'PUT') {
 		var data = options.json || options.formData || {};
-		xhr.send(JSON.stringify(data));
+		xhr.send(data);
 	}
 	else
 		xhr.send();
